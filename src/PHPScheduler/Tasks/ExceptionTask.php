@@ -33,4 +33,9 @@ class ExceptionTask implements ITask
         //throw exception named whatever was passed when constructed.
         throw new $this->exceptionFQN($this->message);
     }
+
+    public function __tostring()
+    {
+        return sprintf('<%s %s("%s")>', __CLASS__, $this->exceptionFQN, $this->message);
+    }
 }
