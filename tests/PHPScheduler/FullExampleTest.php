@@ -5,9 +5,9 @@ namespace PHPScheduler;
 class SchedulerTest extends \PHPUnit_Framework_TestCase
 {
     /**
-     * Test the Scheduler and FileTaskBackend
+     * Test the Scheduler and FileBackend
      */
-    public function testSchedulerFileTaskBackend()
+    public function testSchedulerFileBackend()
     {
         $backendPath = '/tmp/PHPSchedulerTasks/'.uniqid();
         mkdir($backendPath, 0777, true);
@@ -17,7 +17,7 @@ class SchedulerTest extends \PHPUnit_Framework_TestCase
         $task = new Tasks\EchoTask($str);
         
         $scheduler = new Scheduler(
-            new TaskBackends\FileTaskBackend($backendPath)
+            new TaskBackends\FileBackend($backendPath)
         );
 
         //schedule it

@@ -20,7 +20,7 @@ function genId()
 /**
  * Store tasks on local filesystem
  */
-class FileTaskBackend implements ITaskBackend
+class FileBackend implements ITaskBackend
 {
 
     protected $path;
@@ -80,7 +80,7 @@ class FileTaskBackend implements ITaskBackend
     {
         //instead of while(true), we use a safeguard to avoid infinite loops.
         //100 max iterations should be plenty, even on a busy server.
-        //You shound be careful using the FileTaskBackend anyway.
+        //You shound be careful using the FileBackend anyway.
         $safeGuard = 100;
         while ($safeGuard-- > 0) {
             //get files
@@ -116,7 +116,7 @@ class FileTaskBackend implements ITaskBackend
         }
         //the safeguard ran out. This is really bad. Throw an exception
         throw new \Exception(
-            'FileTaskBackend have problems accessing tasks on filesystem.'
+            'FileBackend have problems accessing tasks on filesystem.'
             .'Even if some tasks still complete, this will lead to extremely'
             .'poor performance. Consider using a different backend.'
         );
