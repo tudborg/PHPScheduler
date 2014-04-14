@@ -47,17 +47,47 @@ class Scheduler
 
     /**
      * Run next task
-     * @return mixed result from task, or false if no task
+     * @return mixed result from task
      */
     public function runNextTask()
     {
-        //try fetch task
-        $task = $this->retrieve();
-        if ($task === null) {
-           //if no task, return false
-            return false;
-        } else {
-            return $this->taskRunner->runTask($task);
+        $result = null;
+        $this->run(function ($e) {
+            throw $e;
+        }, 1, $result);
+        return $result;
+    }
+
+    /**
+     * Run scheduled work
+     * @param  callable $excHandler Optionally handle exceptions here.
+     *                              If no handler is given, exceptions are ignored.
+     *                              Handler is called with $excHandler(\Exception $e)
+     * @param integer $max          Maximum number of tasks to run
+     * @return integer              number of succesful tasks
+     */
+    public function run(callable $excHandler = null, $max = null, &$lastResult = null)
+    {
+        $s = 0;//success
+        while ($max === null || (is_int($max) && $max-- > 0)) {//forever
+
+            $task = $this->retrieve();
+            if (!($task instanceof ITask)) {
+                break;
+            }
+
+            try {
+                //ignore output, since we have no way of storing it anyway.
+                //If output is important, it should be handled by task
+                $lastResult = $this->taskRunner->runTask($task);
+                $s += 1;//success, count 1
+            } catch (TaskException $e) {
+                //error in task, hand the error to $excHandler if any
+                if (is_callable($excHandler)) {
+                    call_user_func($excHandler, $e);
+                }
+            }
         }
+        return $s; //return number of successes.
     }
 }
