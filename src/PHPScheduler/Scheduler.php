@@ -46,19 +46,6 @@ class Scheduler
     }
 
     /**
-     * Run next task
-     * @return mixed result from task
-     */
-    public function runNextTask()
-    {
-        $result = null;
-        $this->run(function ($e) {
-            throw $e;
-        }, 1, $result);
-        return $result;
-    }
-
-    /**
      * Run scheduled work
      * @param  callable $excHandler Optionally handle exceptions here.
      *                              If no handler is given, exceptions are ignored.

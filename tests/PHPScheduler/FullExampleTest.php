@@ -10,7 +10,7 @@ class SchedulerTest extends \PHPUnit_Framework_TestCase
     public function testSchedulerFileTaskBackend()
     {
         $backendPath = '/tmp/PHPSchedulerTasks/'.uniqid();
-        mkdir($backendPath);
+        mkdir($backendPath, 0777, true);
 
         $str = 'hello world';
         //create our demo task
@@ -60,7 +60,9 @@ class SchedulerTest extends \PHPUnit_Framework_TestCase
         //schedule task
         $scheduler->schedule($task);
         //try to run next task
-        $result = $scheduler->runNextTask();
+        $scheduler->run(function ($e) {
+            throw $e;
+        }, 1, $output);
 
     }
 
@@ -84,7 +86,9 @@ class SchedulerTest extends \PHPUnit_Framework_TestCase
         //schedule task
         $scheduler->schedule($task);
         //try to run next task
-        $output = $scheduler->runNextTask();
+        $scheduler->run(function ($e) {
+            throw $e;
+        }, 1, $output);
         //assert that inputting $input with EchoTask always
         //return $output that is equal to $input.
         $this->assertEquals($input, $output);
@@ -94,6 +98,7 @@ class SchedulerTest extends \PHPUnit_Framework_TestCase
     /**
      * expect thrown exception should be reraised in this script, even
      * when run inside a sandbox.
+     * @small
      * @expectedException     \PHPScheduler\PHPSchedulerException
      */
     public function testSchedulerSandboxtTaskRunnerException()
@@ -111,6 +116,32 @@ class SchedulerTest extends \PHPUnit_Framework_TestCase
         //schedule task
         $scheduler->schedule($task);
         //try to run next task
-        $output = $scheduler->runNextTask();
+        $scheduler->run(function ($e) {
+            throw $e;
+        }, 1, $output);
+    }
+
+    public function testSchedulerRunFunctionSimple()
+    {
+        $scheduler = new Scheduler(
+            new TaskBackends\InMemoryBackend(),
+            new TaskRunners\SandboxTaskRunner([
+                dirname(__DIR__) . "/bootstrap.php"
+            ])
+        );
+
+        $task = new Tasks\ExceptionTask('\\PHPScheduler\\PHPSchedulerException', 'do fail');
+        $scheduler->schedule($task);//schedule task now
+
+        $errorCount = 0;
+        $successes = $scheduler->run(function ($exc) use (&$errorCount) {
+            $errorCount += 1;
+        });
+
+        //assert that we had exactly 1 error and no successes
+        $this->assertEquals(0, $successes);
+        $this->assertEquals(1, $errorCount);
+
+        return;
     }
 }
