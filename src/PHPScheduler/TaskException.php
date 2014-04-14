@@ -4,7 +4,7 @@ namespace PHPScheduler;
 
 /**
  * The TaskException describes errors thrown inside a task run.
- * It overide the __tostring for a nice view of the $previous exception
+ * It overide the __tostring for a nice view of the $previous exception.
  */
 class TaskException extends PHPSchedulerException
 {
