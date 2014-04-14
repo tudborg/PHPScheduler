@@ -51,18 +51,11 @@ class InMemoryBackend implements ITaskBackend
     public function retrieve()
     {
         if (count($this->taskStorage) > 0) {
-            //filter array, leaving only tasks to be run
-            $filtered = array_filter($this->taskStorage, function ($spec) {
-                return $spec[0] <= microtime(true);
-            });
-            //get match
-            $match = array_shift($filtered);
-            if ($match === null) {
-                //if no match, return null
-                return null;
-            } else {
-                //else return task part of match
+            if ($this->taskStorage[0][0] <= microtime(true)) {
+                $match = array_shift($this->taskStorage);
                 return $match[1];
+            } else {
+                return null;
             }
         } else {
             return null;
