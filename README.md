@@ -20,9 +20,11 @@ Useful for debugging and task buffering.
 Running with a single server? No access to a database or Redis?
 This one is for you. Goes nicely with a minutely cronjob for running the tasks.
 
-### Redis
+### Redis (done-ish)
 Use Redis as a task backend.
 Useful if you have multiple servers (or task workers).
+
+Implemented with redis' sorted sets
 
 ### MySQL
 Store tasks in a MySQL table.
