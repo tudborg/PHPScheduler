@@ -26,10 +26,16 @@ Useful if you have multiple servers (or task workers).
 
 Implemented with redis' sorted sets
 
-### MySQL
+### MySQL (done-ish)
 Store tasks in a MySQL table.
 A lot slower than Redis, but gets the job done.
 
+
+Notes
+-----------
+
+The Redis and MySQL backends need serious testing, with multiple
+schedulers and workers.
 
 
 
@@ -160,6 +166,70 @@ while (true) {
     $scheduler->run();
     sleep(1);
 }
+
+//the closing tag is for the highlighter. You should never close your files.
+?>
+```
+
+
+
+Backends
+-----------
+
+### Redis
+```php
+<?php
+// ... autoloader here
+
+use \PHPScheduler\Scheduler;
+use \PHPScheduler\TaskBackends\RedisBackend;
+use \PHPScheduler\Tasks\EchoTask;
+
+
+$redis = new \Redis();
+$redis->connect('127.0.0.1');
+
+//create a scheduler
+$scheduler = new Scheduler(
+    //Create a file backend.
+    //The tasks will be stored locally on disk.
+    new RedisBackend($redis, "my_task_queue")
+);
+
+//now we can add tasks to the scheduler.
+$task = new EchoTask('hello world');
+//lets schedule it 5 seconds into the future
+$scheduler->schedule($task, microtime(true)+5);
+
+//the closing tag is for the highlighter. You should never close your files.
+?>
+```
+
+
+### MySQL
+```php
+<?php
+// ... autoloader here
+
+use \PHPScheduler\Scheduler;
+use \PHPScheduler\TaskBackends\MySQLBackend;
+use \PHPScheduler\Tasks\EchoTask;
+
+
+$pdo = new \PDO($dsn, $user, $pass); //your PDO here
+
+
+//create a scheduler
+$scheduler = new Scheduler(
+    //Create a file backend.
+    //The tasks will be stored locally on disk.
+    new MySQLBackend($pdo, "my_db_name", "my_scheduled_tasks_table")
+);
+
+//now we can add tasks to the scheduler.
+$task = new EchoTask('hello world');
+//lets schedule it 5 seconds into the future
+$scheduler->schedule($task, microtime(true)+5);
 
 //the closing tag is for the highlighter. You should never close your files.
 ?>
