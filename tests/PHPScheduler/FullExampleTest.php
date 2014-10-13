@@ -4,13 +4,30 @@ namespace PHPScheduler;
 
 class SchedulerTest extends \PHPUnit_Framework_TestCase
 {
+    private $dirs = [];
+    private $basedir = '/tmp/PHPSchedulerTasks';
+
+    public function setUp()
+    {
+        mkdir($this->basedir, 0777, true);
+    }
+
+    public function tearDown()
+    {
+        foreach ($this->dirs as $dir) {
+            rmdir($dir);
+        }
+        rmdir($this->basedir);
+    }
+
     /**
      * Test the Scheduler and FileBackend
      */
     public function testSchedulerFileBackend()
     {
-        $backendPath = '/tmp/PHPSchedulerTasks/'.uniqid();
+        $backendPath = $this->basedir.'/'.uniqid();
         mkdir($backendPath, 0777, true);
+        $this->dirs[] = $backendPath;
 
         $str = 'hello world';
         //create our demo task
@@ -27,7 +44,6 @@ class SchedulerTest extends \PHPUnit_Framework_TestCase
         //run the task, to be sure that it runs as expected
         $this->assertEquals($task->run(), $retrievedTask->run());
         //and clean backend path, it should be empty since we removed all tasks
-        rmdir($backendPath);
     }
 
     /**
