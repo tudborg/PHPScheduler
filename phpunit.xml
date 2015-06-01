@@ -1,8 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<phpunit bootstrap="tests/bootstrap.php" colors="true">
+<phpunit
+    bootstrap="tests/bootstrap.php"
+    colors="true" >
+    <logging>
+      <log type="coverage-text"
+        target="php://stdout"
+        addUncoveredFilesFromWhitelist="false"
+        processUncoveredFilesFromWhitelist="false" />
+        <log type="coverage-clover"
+            target="tests/clover.xml" />
+    </logging>
+    <filter>
+        <blacklist>
+            <directory>./vendor/</directory>
+        </blacklist>
+    </filter>
     <testsuites>
         <testsuite name="Test Suite">
-            <directory>./tests/</directory>
+            <directory>tests/</directory>
         </testsuite>
     </testsuites>
 </phpunit>
