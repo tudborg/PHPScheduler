@@ -13,22 +13,31 @@ schedule them to run right away.
 Task storage is plugable, so you can choose where you want to store the tasks.
 Currently, the following backends are planned (but you can easily add more):
 
-### InMemory (done)
+### InMemory
+_done_
 Useful for debugging and task buffering.
 
-### File (done)
+### File
+_done_
 Running with a single server? No access to a database or Redis?
 This one is for you. Goes nicely with a minutely cronjob for running the tasks.
 
-### Redis (done-ish)
+### Redis
+_done_
 Use Redis as a task backend.
 Useful if you have multiple servers (or task workers).
 
 Implemented with redis' sorted sets
 
-### MySQL (done-ish)
+### MySQL
+_done_
 Store tasks in a MySQL table.
 A lot slower than Redis, but gets the job done.
+
+### SQLite (via PDO)
+_pending_
+Store tasks in a SQLite
+
 
 
 Notes
@@ -36,6 +45,9 @@ Notes
 
 The Redis and MySQL backends need serious testing, with multiple
 schedulers and workers.
+Havn't gotten to that part yet.
+I don't recommend you use MySQL or Redis storage in production yet.
+I'll tag a v1.0.0 when this is ready for use.
 
 
 
