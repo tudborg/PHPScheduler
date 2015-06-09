@@ -49,7 +49,7 @@ abstract class AbstractBackendTest extends \PHPUnit_Framework_TestCase
     protected function _test2($backend)
     {
         $tasks = [];
-        $taskCount = 50;
+        $taskCount = 100;
         // create a few tasks
         for ($i=0; $i < $taskCount; $i++) { 
             $tasks[] = new Tasks\EchoTask($i);
