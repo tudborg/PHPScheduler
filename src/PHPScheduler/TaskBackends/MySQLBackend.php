@@ -17,7 +17,7 @@ class MySQLBackend implements ITaskBackend
     protected $table;
 
     const QUERY_TABLE_CREATE = "
-    CREATE TABLE IF NOT EXISTS tasks.scheduled_tasks (
+    CREATE TABLE IF NOT EXISTS `%s`.`%s` (
         `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
         `run_at` DATETIME NOT NULL,
         `serialized_task` BLOB NOT NULL,
