@@ -4,23 +4,29 @@ namespace PHPScheduler;
 
 class RedisBackendTest extends AbstractBackendTest
 {
+    private $redis;
+    private $host;
+
     public function setUp()
     {
+        $this->host = $host = getenv('REDIS_HOST') ? getenv('REDIS_HOST') : '127.0.0.1';
         if (!class_exists("\\Redis")) {
             $this->markTestIncomplete("Class \\Redis does not exist.");
+        } else {
+            $this->redis = new \Redis();
+            $connected = $this->redis->connect($host);
+            if (!$connected) {
+                $this->markTestIncomplete("Could not connect to Redis at {$host}");
+            }
         }
+
     }
 
     public function testRedisBackend()
     {
         $queueName = 'test_queue';
-        
-        $redis = new \Redis();
-        $connected = $redis->connect('127.0.0.1');
-        
-        //assert that we are connected
-        $this->assertTrue($connected);
-        
+        $redis = $this->redis;
+
         //ensure that we start with a fresh empty key
         $redis->delete($queueName);
         
