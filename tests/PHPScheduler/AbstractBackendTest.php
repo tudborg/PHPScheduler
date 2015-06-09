@@ -7,6 +7,12 @@ abstract class AbstractBackendTest extends \PHPUnit_Framework_TestCase
 
     protected function _testBackend($backend)
     {
+        $this->_test1($backend);
+        $this->_test2($backend);
+    }
+
+    protected function _test1($backend)
+    {
         //create dummy tasks
         $original_t1 = new Tasks\EchoTask('t1');
         $original_t2 = new Tasks\EchoTask('t2');
@@ -38,6 +44,42 @@ abstract class AbstractBackendTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('t1', $t1->run());
         $this->assertEquals('t2', $t2->run());
         $this->assertEquals('t3', $t3->run());
+    }
+
+    protected function _test2($backend)
+    {
+        $tasks = [];
+        $taskCount = 50;
+        // create a few tasks
+        for ($i=0; $i < $taskCount; $i++) { 
+            $tasks[] = new Tasks\EchoTask($i);
+        }
+
+        //try to retrieve without anything in queue
+        $noTask = $backend->retrieve();
+        $this->assertNull($noTask);
+
+        // schedule them in the order they apear
+        for ($i=0; $i < $taskCount; $i++) {
+            // the - 10 part is to make sure that all tasks should be run _now_
+            $this->assertTrue($backend->schedule($tasks[$i], microtime(true) - 10 + ($i/1000) ));
+        }
+
+        // now for each tasks in that order,
+        // assert that the task retrieved from the backend is in same order.
+        $output = [];
+        foreach ($tasks as $task) {
+            $retrived = $backend->retrieve();
+            $this->assertEquals($task->serialize(), $retrived->serialize());
+            $output[] = $retrived->run();
+        }
+
+        // assert that the order is in fact correct by checkout output of echo tasks
+        $prevValue = -1;
+        foreach ($output as $value) {
+            $this->assertGreaterThan($prevValue, $value);
+            $prevValue = $value;
+        }
     }
 
 }
