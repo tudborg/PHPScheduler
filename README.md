@@ -92,7 +92,7 @@ $scheduler->schedule($task, microtime(true)+5);
 #### Worker script.
 
 This is a script that reads from the queue and processes everything that is
-pending, and then exists.
+pending, and then exits.
 This could be triggered by a cron-job or similar.
 
 ```php
