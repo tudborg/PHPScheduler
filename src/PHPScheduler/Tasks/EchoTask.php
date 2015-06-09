@@ -5,7 +5,7 @@ namespace PHPScheduler\Tasks;
 use PHPScheduler\ITask;
 
 /**
- * Echo whatever was stored when task was constructed
+ * Returns whatever was stored when task was constructed
  */
 class EchoTask implements ITask
 {
