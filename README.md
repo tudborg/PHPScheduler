@@ -206,8 +206,8 @@ $redis->connect('127.0.0.1');
 
 //create a scheduler
 $scheduler = new Scheduler(
-    //Create a file backend.
-    //The tasks will be stored locally on disk.
+    //Create a Redis backend.
+    //The tasks will be stored in redis.
     new RedisBackend($redis, "my_task_queue")
 );
 
@@ -236,8 +236,8 @@ $pdo = new \PDO($dsn, $user, $pass); //your PDO here
 
 //create a scheduler
 $scheduler = new Scheduler(
-    //Create a file backend.
-    //The tasks will be stored locally on disk.
+    //Create a MySQL backend.
+    //The tasks will be stored in the MySQL database table given
     new MySQLBackend($pdo, "my_db_name", "my_scheduled_tasks_table")
 );
 
