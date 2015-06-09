@@ -4,6 +4,8 @@ PHPScheduler
 A Scheduler / Task runner for PHP with plugable backends.
 ------------
 
+_note: This is an experiment._
+
 
 Create tasks objects and schedule them to run somewhere else.
 You can use PHPScheduler to schedule jobs to run in the future, or simply
